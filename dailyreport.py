@@ -135,7 +135,7 @@ try:
     print("Connection closed")
 
 except Exception as e:
-    logging.info("Error connecting to the database: %s", e)
+    logging.Exception("Error connecting to the database: %s", e)
     print("Error connecting to the database:", e)
 
 # Sending Mail
@@ -162,7 +162,7 @@ def send_email_with_csv(attachment_file, today_str, sender_email, sender_passwor
           logging.info(f"Email sent to: {receiver_emails_str}" )
           print(f"Email sent to:  {receiver_emails_str}")
     except Exception as e:
-        logging.info("Erro sending email", e)
+        logging.Exception("Error sending email", e)
         print("Error sending email:", e)
 
 if __name__ == "__main__":
