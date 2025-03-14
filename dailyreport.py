@@ -65,11 +65,11 @@ try:
             WHERE DATE(created_at) = '{yesterday_str}';"""
         ),
         (
-            "Users Posts",
+            "Posts",
             f"SELECT COUNT(*) FROM simosa_feed.posts WHERE DATE(created_at) = '{yesterday_str}';"
         ),
         (
-            "Group Followers",
+            "Group Following",
             f"""SELECT Count(*) AS total_followers
             FROM simosa_feed.groups g  
             JOIN simosa_feed.group_followers n ON n.group_id = g.id
@@ -78,30 +78,30 @@ try:
 
         ),
         (
-            "1-1 Following",
+            "1-1 Following (Total)",
             f"""Select count((f.follower_id)) as Followers 
             from simosa_feed.users u 
             join simosa_feed.followers f on u.id=f.user_id  where is_active != False;"""
         ),
         (
-            "Total Comments",
+            "Comments",
             f"""select count(*) from comments where date(created_at)='{yesterday_str}';"""
         ),
         (
-            "Total Likes",
+            "Likes",
             f"""select count(user_id) from post_likes where date(created_at)='{yesterday_str}';"""
         ),
         (
-            "Total User Likes",
+            "Users Liked",
             f"""select count(distinct(user_id)) from post_likes where date(created_at)='{yesterday_str}';"""
         ),
         (
-            "Total User Comments",
+            "Users Commented",
             f"""select count(distinct(user_id)) from comments where date(created_at)='{yesterday_str}';"""
         )
     ]
 
-    # Function to check if each query returns a single output or more
+    # Function to check if each query returns a single output or more (Not needed for updated Queries)
     def process_result(rows):
         if not rows:
             return ""
