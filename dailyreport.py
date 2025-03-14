@@ -159,6 +159,8 @@ def send_email_with_csv(attachment_file, today_str, sender_email, sender_passwor
           server.starttls()
           server.login(sender_email, sender_password)
           server.send_message(msg)
+          logging.info(f"Email sent to: {receiver_emails_str}" )
+          print(f"Email sent to:  {receiver_emails_str}")
     except Exception as e:
         logging.info("Erro sending email", e)
         print("Error sending email:", e)
@@ -172,8 +174,6 @@ if __name__ == "__main__":
     #receiver_email = config.get("email", "receiver_email")
     receiver_emails_str = config.get("email", "receiver_email")
     receiver_emails = [email.strip() for email in receiver_emails_str.split(",")]
-    
-    logging.info(f"Email sent to: {receiver_emails_str}" )
-    print(f"Email sent to:  {receiver_emails_str}")
+
 
     send_email_with_csv(file_name, yesterday_str, sender_email, sender_password, receiver_emails)
