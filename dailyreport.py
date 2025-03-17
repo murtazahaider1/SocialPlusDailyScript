@@ -147,7 +147,7 @@ def send_email_with_csv(attachment_file, today_str, sender_email, sender_passwor
     msg["Subject"] = f"Social+ Daily Report for {today_str}"
     msg["From"] = sender_email
     msg["To"] = receiver_email
-    msg.set_content("Please find attached the daily report CSV file for Social+.")
+    msg.set_content("Hi Team,\n\nPlease find attached the daily report CSV file for Social+.\n\nThank you")
 
     with open(attachment_file, "rb") as f:
         file_data = f.read()
