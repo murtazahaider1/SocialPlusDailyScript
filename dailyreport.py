@@ -52,7 +52,7 @@ try:
     curr.execute("SET search_path TO simosa_feed;")
     logging.info("Schema set to simosa_feed\n")
     print("Schema set to simosa_feed\n")
-    curr.execute("SET timezone To 'Asia/Karachi';")
+    curr.execute("SET timezone To 'GMT-5';")
     logging.info("Timezone Set to GMT +5")
 
     connection.set_client_encoding('UTF8')
@@ -69,7 +69,7 @@ try:
             f"SELECT COUNT(*) FROM simosa_feed.posts WHERE DATE(created_at) = '{yesterday_str}';"
         ),
         (
-            "Group Following",
+            "Group FollowSing",
             f"""SELECT Count(*) AS total_followers
             FROM simosa_feed.groups g  
             JOIN simosa_feed.group_followers n ON n.group_id = g.id
@@ -98,6 +98,26 @@ try:
         (
             "Users Commented",
             f"""select count(distinct(user_id)) from comments where date(created_at)='{yesterday_str}';"""
+        ),
+        (
+            "Active Users",
+            f"""with active_users as (
+	        -- Users Created
+	        select distinct(t.id) as user_id from simosa_feed.users t where t.created_at::date = '{yesterday_str}'
+	        union
+	        -- Posts
+	        select distinct(t.user_id) as user_id from simosa_feed.posts t where t.created_at::date = '{yesterday_str}'
+	        union
+	        -- Group Following
+	        select distinct(t.user_id) as user_id from simosa_feed.group_followers t where t.followed_at::date = '{yesterday_str}'
+	        union
+	        -- Users Liked
+	        select distinct(t.user_id) as user_id from simosa_feed.post_likes t where t.created_at::date = '{yesterday_str}'
+	        union
+	        -- Users Commented
+	        select distinct(t.user_id) as user_id from simosa_feed.comments t where t.created_at::date = '{yesterday_str}'
+            )
+            select current_date-1, count(t.user_id) from active_users t;"""
         )
     ]
 
