@@ -117,7 +117,7 @@ try:
 	        -- Users Commented
 	        select distinct(t.user_id) as user_id from simosa_feed.comments t where t.created_at::date = '{yesterday_str}'
             )
-            select current_date-1, count(t.user_id) from active_users t;"""
+            select count(t.user_id) from active_users t;"""
         )
     ]
 
