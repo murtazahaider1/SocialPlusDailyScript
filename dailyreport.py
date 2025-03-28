@@ -1,9 +1,24 @@
+###########################################################
+
+# This cron job runs the SocialPlus daily report script automatically.
+# Server Time Zone: China Standard Time (CST)
+# Execution Time: 03:05 AM CST (equivalent to 12:05 AM Pakistan Time - PKT)
+# The script runs using the Python environment located at:
+# /home/ubuntu/socialplus_report_job/.env/bin/python
+# 
+# Command:
+# 5 3 * * * /home/ubuntu/socialplus_report_job/.env/bin/python /home/ubuntu/socialplus_report_job/SocialPlusDailyScript/dailyreport.py >> /home/ubuntu/socialplus_report_job/SocialPlusDailyScript/cron.log 2>&1
+#
+# Output and errors are logged in cron.log for debugging and monitoring.
+
+###########################################################
 import psycopg2
 import csv
 from datetime import date
 import configparser
 from datetime import date, timedelta
 import logging
+import os
 
 logging.basicConfig(
     level=logging.INFO, 
@@ -11,9 +26,10 @@ logging.basicConfig(
 )
 
 
+current_path = os.path.dirname(os.path.realpath(__file__))
 
 config = configparser.ConfigParser()
-config.read('config.ini')  
+config.read(f"{current_path}/config.ini")  
 
 host = config.get("database", "host")
 port = config.get("database", "port")
@@ -24,10 +40,10 @@ password = config.get("database", "password")
 
 yesterday = date.today() - timedelta(days=1)
 yesterday_str = yesterday.strftime("%Y-%m-%d")
-file_name = f"socialplus_{yesterday_str}.csv"
+file_name = f"{current_path}/socialplus_{yesterday_str}.csv"
 print(yesterday_str)
 
-file_handler = logging.FileHandler(f"socialpluslog_{yesterday_str}.log")
+file_handler = logging.FileHandler(f"{current_path}/socialpluslog_{yesterday_str}.log")
 file_handler.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 file_handler.setFormatter(formatter)
@@ -79,9 +95,7 @@ try:
         ),
         (
             "1-1 Following (Total)",
-            f"""Select count((f.follower_id)) as Followers 
-            from simosa_feed.users u 
-            join simosa_feed.followers f on u.id=f.user_id  where is_active != False;"""
+            f"""select count(*) from simosa_feed.followers;"""
         ),
         (
             "Comments",
@@ -188,7 +202,7 @@ def send_email_with_csv(attachment_file, today_str, sender_email, sender_passwor
 if __name__ == "__main__":
     yesterday = date.today() - timedelta(days=1)
     yesterday_str = yesterday.strftime("%Y-%m-%d")
-    file_name = f"socialplus_{yesterday_str}.csv"
+    file_name = f"{current_path}/socialplus_{yesterday_str}.csv"
     sender_email = config.get("email", "sender_email")
     sender_password = config.get("email", "sender_password")
     #receiver_email = config.get("email", "receiver_email")
