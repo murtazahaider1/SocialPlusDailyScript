@@ -85,7 +85,7 @@ try:
             f"SELECT COUNT(*) FROM simosa_feed.posts WHERE DATE(created_at) = '{yesterday_str}';"
         ),
         (
-            "Group FollowSing",
+            "Group Following",
             f"""SELECT Count(*) AS total_followers
             FROM simosa_feed.groups g  
             JOIN simosa_feed.group_followers n ON n.group_id = g.id
